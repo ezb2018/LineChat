@@ -1,29 +1,23 @@
-let item = [];
-let count = 1;
-let el = document.createElement('script');
-el.type = 'application/ld+json';
-
-if ($(".google-breadcrumb").find('li').length > 0) { 
-    $(".google-breadcrumb").find('li').each(function () {
-        let url = '';
-        if ($(this).find('a').attr('href') == undefined)
-            url = window.location.pathname;
-        else
-            url = $(this).find('a').attr('href');
-
-        item.push({
-            "@type": "ListItem",
-            "position": count,
-            "name": $(this).text(),
-            "item": "https://" + window.location.host + url
-        });
-        count++;
-    });
-
-    el.text = JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": item
-    });
-    document.querySelector('body').appendChild(el);
+var el_2 = document.createElement('script');
+el_2.type = 'application/ld+json';
+var bread = {
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": []
 }
+
+$('.breadcrumb li').each(function(index) {
+  var item = {}
+  var href = $(this).find("a").attr('href');
+  if (href) item["@id"] = href // OR location.protocol+"//"+location.host+href;
+  item["name"] = $.trim($(this).text()); 
+
+  bread.itemListElement.push({
+    "@type": "ListItem",
+    "position": index + 1,
+    item
+  })
+});
+
+el_2.text = JSON.stringify(bread);
+console.log(JSON.stringify(bread,null,2))
